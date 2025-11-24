@@ -1,21 +1,37 @@
 package com.example.prepa1.controller;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.prepa1.DTO.correctanswerDTO;
-import com.example.prepa1.DTO.langueDTO;
-import com.example.prepa1.DTO.questionDTO;
-import com.example.prepa1.DTO.reponseDTO;
+import com.example.prepa1.entity.LatexEntity;
+import com.example.prepa1.repository.LatexRepository;
 
 @RestController
+@CrossOrigin("*")
 @RequestMapping("/api")
 public class quizController {
+	
+	@Autowired
+	LatexRepository latexRepository;
+	
+	
+	@PostMapping("saveQuestion")
+	public void postLatex(@RequestBody LatexEntity question){
+		latexRepository.save(question);
+	}
+	
+	@GetMapping("allQuestions")
+	public  List<LatexEntity> getAll(){
+		return latexRepository.findAll();
+	}
+	
 	@GetMapping("questions")
 	public String getUserById(){
 		return """

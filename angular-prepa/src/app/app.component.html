@@ -1,0 +1,7 @@
+<textarea [(ngModel)]="input" (ngModelChange)="renderLatex()" rows="5"></textarea>
+
+<div [innerHTML]="output"></div>
+
+<button (click)="save()">Save</button>
+
+<button (click)="display()">display all</button>
