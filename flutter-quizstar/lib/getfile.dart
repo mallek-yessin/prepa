@@ -24,7 +24,6 @@ class _QuestionPageState extends State<QuestionPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-
       body: FutureBuilder<Map<String, dynamic>>(
         future: fetchQuestion(1),
         builder: (context, snapshot) {
@@ -37,9 +36,12 @@ class _QuestionPageState extends State<QuestionPage> {
           }
 
           final data = snapshot.data!;
-          final questions = Map<String, dynamic>.from(data['question']['questions']);
-          final responses = Map<String, dynamic>.from(data['reponse']['responses']);
-          final correctAnswers = Map<String, dynamic>.from(data['correctAnswer']['correctAnswers']);
+          final questions =
+              Map<String, dynamic>.from(data['question']['questions']);
+          final responses =
+              Map<String, dynamic>.from(data['reponse']['responses']);
+          final correctAnswers = Map<String, dynamic>.from(
+              data['correctAnswer']['correctAnswers']);
           print("data");
           print(data);
 
@@ -63,15 +65,18 @@ class _QuestionPageState extends State<QuestionPage> {
                     children: [
                       Text(
                         'Q${key}. $questionText',
-                        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                        style: const TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.bold),
                       ),
                       const SizedBox(height: 8),
-                      ...answers.entries.map((e) => Text('${e.key}) ${e.value}')),
+                      ...answers.entries
+                          .map((e) => Text('${e.key}) ${e.value}')),
                       const SizedBox(height: 8),
 
                       Text(
                         'Bonne réponse : $correct',
-                        style: const TextStyle(color: Colors.green, fontWeight: FontWeight.w600),
+                        style: const TextStyle(
+                            color: Colors.green, fontWeight: FontWeight.w600),
                       ),
                     ],
                   ),

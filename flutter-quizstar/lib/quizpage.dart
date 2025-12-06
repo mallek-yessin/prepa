@@ -3,26 +3,25 @@ import 'dart:convert';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_math_fork/flutter_math.dart';
 import 'package:quizstar/resultpage.dart';
 import 'package:http/http.dart' as http;
-
 
 class getjson extends StatelessWidget {
   final String langname;
   getjson(this.langname);
 
-  Future<List> fetchQuestions() async {
-    final response = await http.get(Uri.parse('http://192.168.1.46:8080/api/questions'));
+  Future<List> fetchQuestions(String chap) async {
+    final response = await http
+        .get(Uri.parse('http://192.168.1.46:8080/api/questions/$chap'));
+    print("STATUS: ${response.statusCode}");
+    print("BODY: ${response.body}");
 
     if (response.statusCode == 200) {
-      // ton backend renvoie un JSON de ce type :
-      // {"python.json":[{...},{...},{...}], "cpp.json":[...]}
-      final Map<String, dynamic> data = json.decode(response.body);
+      final data = json.decode(response.body);
 
-      if (langname == "Python") {
-        return data["python.json"];
-      } else if (langname == "C++") {
-        return data["cpp.json"];
+      if (chap == "python.json") {
+        return data[chap];
       } else {
         throw Exception("Language not supported");
       }
@@ -33,21 +32,32 @@ class getjson extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    /*
+Future<List> fetchQuestions() async {
+  final question = await http.get(Uri.parse('http://192.168.1.46:8080/api/allQuestions'));
+
+  if (question.statusCode == 200) {
+    return json.decode(question.body);
+  } else {
+    throw Exception("Failed to load questions");
+  }
+}*/
+
     return FutureBuilder<List>(
-      future: fetchQuestions(),
+      future: fetchQuestions(this.langname),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Scaffold(body: Center(child: Text("Loading...")));
         } else if (snapshot.hasError) {
-          return Scaffold(body: Center(child: Text("Error: ${snapshot.error}")));
+          return Scaffold(
+              body: Center(child: Text("Error: ${snapshot.error}")));
         } else if (!snapshot.hasData) {
           return Scaffold(body: Center(child: Text("No data")));
         } else {
-          return quizpage(mydata: snapshot.data!);
+          return quizpage(mydata: snapshot.data!); // snapshot.data est un Map
         }
       },
     );
-
   }
 }
 
@@ -74,6 +84,7 @@ class _quizpageState extends State<quizpage> {
   int timer = 30;
   String showtimer = "30";
   var random_array;
+  int questionNumber = 1;
 
   Map<String, Color> btncolor = {
     "a": Colors.indigoAccent,
@@ -88,19 +99,19 @@ class _quizpageState extends State<quizpage> {
   // to create the array elements randomly use the dart:math module
   // -----     CODE TO GENERATE ARRAY RANDOMLY
 
-  genrandomarray(){
+  genrandomarray() {
     var distinctIds = [];
     var rand = new Random();
-      for (int i = 0; ;) {
-      distinctIds.add(rand.nextInt(10));
-        random_array = distinctIds.toSet().toList();
-        if(random_array.length < 10){
-          continue;
-        }else{
-          break;
-        }
+    for (int i = 0;;) {
+      distinctIds.add(rand.nextInt(questionNumber));
+      random_array = distinctIds.toSet().toList();
+      if (random_array.length < questionNumber) {
+        continue;
+      } else {
+        break;
       }
-      print(random_array);
+    }
+    print(random_array);
   }
 
   //   var random_array;
@@ -157,7 +168,7 @@ class _quizpageState extends State<quizpage> {
     canceltimer = false;
     timer = 30;
     setState(() {
-      if (j < 10) {
+      if (j < questionNumber) {
         i = random_array[j];
         j++;
       } else {
@@ -175,7 +186,6 @@ class _quizpageState extends State<quizpage> {
   }
 
   void checkanswer(String k) {
-    
     // in the previous version this was
     // mydata[2]["1"] == mydata[1]["1"][k]
     // which i forgot to change
@@ -253,41 +263,36 @@ class _quizpageState extends State<quizpage> {
         );
         return Future.value(false); // empêche de quitter
       },
-
       child: Scaffold(
         body: Column(
           children: <Widget>[
             Expanded(
               flex: 3,
               child: Container(
-                padding: EdgeInsets.all(15.0),
-                alignment: Alignment.bottomLeft,
-                child: Text(
-                  mydata[0][i.toString()],
-                  style: TextStyle(
-                    fontSize: 16.0,
-                    fontFamily: "Quando",
+                  padding: EdgeInsets.all(15.0),
+                  alignment: Alignment.bottomLeft,
+                  child: Math.tex(
+                    mydata[0][i.toString()],
+                    textStyle: TextStyle(fontSize: 22),
+                  )),
+            ),
+            Expanded(
+              flex: 6,
+              child: AbsorbPointer(
+                absorbing: disableAnswer,
+                child: Container(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      choicebutton('a'),
+                      choicebutton('b'),
+                      choicebutton('c'),
+                      choicebutton('d'),
+                    ],
                   ),
                 ),
               ),
             ),
-            Expanded(
-                flex: 6,
-                child: AbsorbPointer(
-                  absorbing: disableAnswer,
-                    child: Container(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        choicebutton('a'),
-                        choicebutton('b'),
-                        choicebutton('c'),
-                        choicebutton('d'),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
             Expanded(
               flex: 1,
               child: Container(

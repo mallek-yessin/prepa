@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:quizstar/splash.dart';
+import 'package:quizstar/convertLatex.dart';
+import 'package:quizstar/quizpage.dart';
+import 'splash.dart';
 
 void main() => runApp(MyApp());
 

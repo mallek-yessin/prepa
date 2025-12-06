@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:quizstar/quizpage.dart';
@@ -8,7 +10,6 @@ class homepage extends StatefulWidget {
 }
 
 class _homepageState extends State<homepage> {
-
   List<String> images = [
     "images/py.png",
     "images/java.png",
@@ -25,17 +26,17 @@ class _homepageState extends State<homepage> {
     "Linux is a OPEN SOURCE Operating System which powers many Servers and Workstation.\nIt is also a top Priority in Developement Work !",
   ];
 
-  Widget customcard(String langname, String image, String des){
+  Widget customcard(String langname, String image, String des) {
     return Padding(
       padding: EdgeInsets.symmetric(
         vertical: 20.0,
         horizontal: 30.0,
       ),
       child: InkWell(
-        onTap: (){
+        onTap: () {
           Navigator.of(context).pushReplacement(MaterialPageRoute(
             // in changelog 1 we will pass the langname name to ther other widget class
-            // this name will be used to open a particular JSON file 
+            // this name will be used to open a particular JSON file
             // for a particular language
             builder: (context) => getjson(langname),
           ));
@@ -85,14 +86,12 @@ class _homepageState extends State<homepage> {
                   child: Text(
                     des,
                     style: TextStyle(
-                      fontSize: 18.0,
-                      color: Colors.white,
-                      fontFamily: "Alike"
-                    ),
+                        fontSize: 18.0,
+                        color: Colors.white,
+                        fontFamily: "Alike"),
                     maxLines: 5,
                     textAlign: TextAlign.justify,
                   ),
-                  
                 ),
               ],
             ),
@@ -104,9 +103,8 @@ class _homepageState extends State<homepage> {
 
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitDown, DeviceOrientation.portraitUp
-    ]);
+    SystemChrome.setPreferredOrientations(
+        [DeviceOrientation.portraitDown, DeviceOrientation.portraitUp]);
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -118,7 +116,7 @@ class _homepageState extends State<homepage> {
       ),
       body: ListView(
         children: <Widget>[
-          customcard("Python", images[0], des[0]),
+          customcard("python.json", images[0], des[0]),
           customcard("Java", images[1], des[1]),
           customcard("Javascript", images[2], des[2]),
           customcard("C++", images[3], des[3]),
