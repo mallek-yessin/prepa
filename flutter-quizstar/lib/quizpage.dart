@@ -14,8 +14,6 @@ class getjson extends StatelessWidget {
   Future<List> fetchQuestions(String chap) async {
     final response = await http
         .get(Uri.parse('http://192.168.1.46:8080/api/questions/$chap'));
-    print("STATUS: ${response.statusCode}");
-    print("BODY: ${response.body}");
 
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
@@ -32,17 +30,6 @@ class getjson extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    /*
-Future<List> fetchQuestions() async {
-  final question = await http.get(Uri.parse('http://192.168.1.46:8080/api/allQuestions'));
-
-  if (question.statusCode == 200) {
-    return json.decode(question.body);
-  } else {
-    throw Exception("Failed to load questions");
-  }
-}*/
-
     return FutureBuilder<List>(
       future: fetchQuestions(this.langname),
       builder: (context, snapshot) {
@@ -54,7 +41,10 @@ Future<List> fetchQuestions() async {
         } else if (!snapshot.hasData) {
           return Scaffold(body: Center(child: Text("No data")));
         } else {
-          return quizpage(mydata: snapshot.data!); // snapshot.data est un Map
+          return quizpage(
+              mydata: snapshot.data!,
+              questionNumber:
+                  snapshot.data![0].length); // snapshot.data est un Map
         }
       },
     );
@@ -63,15 +53,18 @@ Future<List> fetchQuestions() async {
 
 class quizpage extends StatefulWidget {
   final List mydata;
+  final int questionNumber;
 
-  quizpage({Key? key, required this.mydata}) : super(key: key);
+  quizpage({Key? key, required this.mydata, required this.questionNumber})
+      : super(key: key);
   @override
-  _quizpageState createState() => _quizpageState(mydata);
+  _quizpageState createState() => _quizpageState(mydata, questionNumber);
 }
 
 class _quizpageState extends State<quizpage> {
   final List mydata;
-  _quizpageState(this.mydata);
+  final int questionNumber;
+  _quizpageState(this.mydata, this.questionNumber);
 
   Color colortoshow = Colors.indigoAccent;
   Color right = Colors.green;
@@ -84,7 +77,6 @@ class _quizpageState extends State<quizpage> {
   int timer = 30;
   String showtimer = "30";
   var random_array;
-  int questionNumber = 1;
 
   Map<String, Color> btncolor = {
     "a": Colors.indigoAccent,
@@ -103,7 +95,7 @@ class _quizpageState extends State<quizpage> {
     var distinctIds = [];
     var rand = new Random();
     for (int i = 0;;) {
-      distinctIds.add(rand.nextInt(questionNumber));
+      distinctIds.add(rand.nextInt(questionNumber) + 1);
       random_array = distinctIds.toSet().toList();
       if (random_array.length < questionNumber) {
         continue;
@@ -111,7 +103,7 @@ class _quizpageState extends State<quizpage> {
         break;
       }
     }
-    print(random_array);
+    i = random_array[0];
   }
 
   //   var random_array;
