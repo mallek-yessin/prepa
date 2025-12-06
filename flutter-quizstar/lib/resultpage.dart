@@ -92,7 +92,7 @@ class _resultpageState extends State<resultpage> {
                 MaterialButton(
                   onPressed: () {
                     Navigator.of(context).pushReplacement(MaterialPageRoute(
-                      builder: (context) => homepage(),
+                      builder: (context) => getchapitre(),
                     ));
                   },
                   child: Text(

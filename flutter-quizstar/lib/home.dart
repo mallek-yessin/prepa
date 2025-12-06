@@ -2,11 +2,49 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:http/http.dart' as http;
 import 'package:quizstar/quizpage.dart';
 
 class homepage extends StatefulWidget {
+  final List chapitres;
+
+  const homepage({super.key, required this.chapitres});
+
   @override
-  _homepageState createState() => _homepageState();
+  _homepageState createState() => _homepageState(chapitres);
+}
+
+class getchapitre extends StatelessWidget {
+  Future<List> fetchQuestions() async {
+    final response =
+        await http.get(Uri.parse('http://192.168.1.46:8080/api/chapters'));
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      return data;
+    } else {
+      throw Exception('Failed to load questions');
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<List>(
+      future: fetchQuestions(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Scaffold(body: Center(child: Text("Loading...")));
+        } else if (snapshot.hasError) {
+          return Scaffold(
+              body: Center(child: Text("Error: ${snapshot.error}")));
+        } else if (!snapshot.hasData) {
+          return Scaffold(body: Center(child: Text("No data")));
+        } else {
+          return homepage(chapitres: snapshot.data!);
+        }
+      },
+    );
+  }
 }
 
 class _homepageState extends State<homepage> {
@@ -25,6 +63,15 @@ class _homepageState extends State<homepage> {
     "C++, being a statically typed programming language is very powerful and Fast.\nit's DMA feature makes it more useful. !",
     "Linux is a OPEN SOURCE Operating System which powers many Servers and Workstation.\nIt is also a top Priority in Developement Work !",
   ];
+
+  final List chapitres;
+
+  _homepageState(this.chapitres);
+
+  print(chapitres) {
+    // TODO: implement print
+    throw UnimplementedError();
+  }
 
   Widget customcard(String langname, String image, String des) {
     return Padding(
@@ -114,14 +161,15 @@ class _homepageState extends State<homepage> {
           ),
         ),
       ),
-      body: ListView(
-        children: <Widget>[
-          customcard("python.json", images[0], des[0]),
-          customcard("Java", images[1], des[1]),
-          customcard("Javascript", images[2], des[2]),
-          customcard("C++", images[3], des[3]),
-          customcard("Linux", images[4], des[4]),
-        ],
+      body: ListView.builder(
+        itemCount: chapitres.length,
+        itemBuilder: (context, index) {
+          return customcard(
+            chapitres[index],
+            images[index],
+            des[index],
+          );
+        },
       ),
     );
   }

@@ -18,11 +18,7 @@ class getjson extends StatelessWidget {
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
 
-      if (chap == "python.json") {
-        return data[chap];
-      } else {
-        throw Exception("Language not supported");
-      }
+      return data[chap];
     } else {
       throw Exception('Failed to load questions');
     }

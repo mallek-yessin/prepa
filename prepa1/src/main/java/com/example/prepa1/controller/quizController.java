@@ -37,6 +37,15 @@ public class quizController {
         
         return map;
     }
+    
+    @GetMapping("/chapters")
+    public List<String> getChapters() {
+        return latexRepository.findAll()
+                .stream()
+                .map(Question::getChap)
+                .distinct()
+                .toList();
+    }
 
 	
     @PostMapping("saveq")
