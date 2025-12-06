@@ -73,7 +73,7 @@ class _homepageState extends State<homepage> {
     throw UnimplementedError();
   }
 
-  Widget customcard(String langname, String image, String des) {
+  Widget customcard(String langname /*, String image, String des*/) {
     return Padding(
       padding: EdgeInsets.symmetric(
         vertical: 20.0,
@@ -99,7 +99,7 @@ class _homepageState extends State<homepage> {
                   padding: EdgeInsets.symmetric(
                     vertical: 10.0,
                   ),
-                  child: Material(
+                  /* child: Material(
                     elevation: 5.0,
                     borderRadius: BorderRadius.circular(100.0),
                     child: Container(
@@ -115,7 +115,7 @@ class _homepageState extends State<homepage> {
                         ),
                       ),
                     ),
-                  ),
+                  ),*/
                 ),
                 Center(
                   child: Text(
@@ -128,7 +128,7 @@ class _homepageState extends State<homepage> {
                     ),
                   ),
                 ),
-                Container(
+                /*  Container(
                   padding: EdgeInsets.all(20.0),
                   child: Text(
                     des,
@@ -139,7 +139,7 @@ class _homepageState extends State<homepage> {
                     maxLines: 5,
                     textAlign: TextAlign.justify,
                   ),
-                ),
+                ),*/
               ],
             ),
           ),
@@ -164,11 +164,11 @@ class _homepageState extends State<homepage> {
       body: ListView.builder(
         itemCount: chapitres.length,
         itemBuilder: (context, index) {
-          return customcard(
-            chapitres[index],
-            images[index],
-            des[index],
-          );
+          return customcard(chapitres[index]
+              /* 
+            "images/"+chapitres[index]["difficulty"]+".png",
+            chapitres[index]["description"],*/
+              );
         },
       ),
     );
