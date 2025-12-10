@@ -1,0 +1,27 @@
+<div style="max-width: 500px; margin: auto">
+
+  <h2>Ajouter une Question</h2>
+<label>chapiter</label>
+  <input type="textarea" [(ngModel)]="chapitre" class="form-control"><br>
+
+
+
+  <label>Question (LaTeX)</label>
+  <input type="text" [(ngModel)]="questionText" class="form-control">
+
+  <h3>Réponses</h3>
+  <div *ngFor="let ans of answers; let i = index">
+    <label>{{ ans.optionKey }}</label>
+    <input type="text"
+           [(ngModel)]="answers[i].optionValue"
+           class="form-control"
+           placeholder="texte réponse">
+
+    <input type="checkbox"
+           [(ngModel)]="answers[i].correct"> Correct ?
+    <hr>
+  </div>
+
+  <button (click)="save()">Enregistrer</button>
+
+</div>

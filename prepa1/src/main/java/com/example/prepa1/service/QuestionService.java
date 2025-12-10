@@ -9,6 +9,8 @@ import java.util.stream.IntStream;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.example.prepa1.dto.AnswerDTO;
+import com.example.prepa1.dto.qQuestionDTO;
 import com.example.prepa1.entity.Answer;
 import com.example.prepa1.entity.Question;
 
@@ -19,6 +21,80 @@ public class QuestionService {
 
     @Autowired
     private LatexRepository repo;
+    
+    
+
+
+    public Question updateQuestion(Long id, qQuestionDTO dto) {
+        Question q = repo.findById(id)
+                .orElseThrow(() -> new RuntimeException("Question introuvable"));
+
+        // Update question fields
+        q.setQuestion(dto.getQuestion());
+        q.setChap(dto.getChap());
+
+        // Clear old answers if needed
+        q.getAnswers().clear();
+
+        // Add updated answers
+        for (AnswerDTO a : dto.getAnswers()) {
+            Answer answer = new Answer();
+            answer.setId(a.getId());
+            answer.setOptionKey(a.getOptionKey());
+            answer.setOptionValue(a.getOptionValue());
+            answer.setCorrect(a.isCorrect());
+            answer.setQuestion(q);
+
+            q.getAnswers().add(answer);
+        }
+
+        return repo.save(q);
+    }
+    
+  /*  public Question updateQuestion(Long id, qQuestionDTO dto) {
+
+        Question question = repo.findById(id)
+                .orElseThrow(() -> new RuntimeException("Question not found"));
+
+        // Mise à jour des champs simples
+        question.setQuestion(dto.getQuestion());
+        question.setChap(dto.getChap());
+
+        // Liste des anciennes réponses
+        Map<Long, Answer> existingAnswers = question.getAnswers()
+                .stream().collect(Collectors.toMap(Answer::getId, a -> a));
+
+        // Nouvelle liste
+        List<Answer> updatedAnswers = dto.getAnswers().stream().map(a -> {
+            Answer answer;
+            if (a.getId() != null && existingAnswers.containsKey(a.getId())) {
+                // Update d'une réponse existante
+                answer = existingAnswers.get(a.getId());
+            } else {
+                // Nouvelle réponse
+                answer = new Answer();
+                answer.setQuestion(question);
+            }
+
+            answer.setOptionKey(a.getOptionKey());
+            answer.setOptionValue(a.getOptionValue());
+            answer.setCorrect(a.isCorrect());
+
+            return answer;
+        }).collect(Collectors.toList());
+
+
+        // Suppression des anciennes réponses non présentes dans la liste
+        question.getAnswers().clear();
+        question.getAnswers().addAll(updatedAnswers);
+
+        return repo.save(question);
+    }*/
+    
+    
+    public void deleteQuestion(Long id) {
+    	repo.deleteById(id);
+    }
 
     
     

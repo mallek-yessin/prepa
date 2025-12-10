@@ -1,0 +1,90 @@
+<div class="container mt-4">
+  <!-- Header et ajout -->
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h5 class="mb-0">Questions</h5>
+    <button class="btn btn-primary" (click)="openForm()">Ajouter une question +</button>
+  </div>
+
+ <!-- Filtres / recherche -->
+ <!--  <div class="d-flex flex-wrap gap-2 mb-3">
+    <input class="form-control me-2" type="search" placeholder="Rechercher par latex..." style="max-width: 200px;" [(ngModel)]="searchText" (input)="filterQuestions()"/>
+    <select class="form-select" style="max-width: 200px;" [(ngModel)]="selectedChapter" (change)="loadQuestions(selectedChapter)">
+      <option value="" selected>Tous les chapitres</option>
+      <option *ngFor="let chap of chapters" [value]="chap">{{ chap }}</option>
+    </select>
+    <button class="btn btn-outline-secondary ms-auto" (click)="filterQuestions()">Filtre avancé</button>
+  </div>-->
+
+  <!-- Tableau questions -->
+  <table class="table table-hover align-middle text-center">
+    <thead class="table-light">
+      <tr>
+        <th>ID</th>
+        <th>question</th>
+        <th>Chapitre</th>
+        <th>Answers</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let q of questions">
+        <td>{{ q.id }}</td>
+        <td>{{ q.question }}</td>
+        <td>{{ q.chap }}</td>
+        <td>
+          <ul class="list-unstyled mb-0">
+            <li *ngFor="let a of q.answers">
+              {{ a.optionKey }} - {{ a.optionValue }}
+              <span class="badge bg-success" *ngIf="a.correct">Correct</span>
+            </li>
+          </ul>
+        </td>
+        <td>
+          <i class="bi bi-pencil-square me-2 text-primary action-icon" title="Edit" (click)="editQuestion(q)">e</i>
+          <i class="bi bi-trash text-danger action-icon" title="Delete" (click)="deleteQuestion(q.id!)">d</i>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Formulaire question (modal ou sidebar) -->
+  <div *ngIf="showForm" class="card p-3 mt-3">
+    <h6>{{ currentQuestion.id ? 'Modifier' : 'Ajouter' }} Question</h6>
+    <form (ngSubmit)="saveQuestion()">
+
+      <div class="mb-2">
+        <label class="form-label">question</label>
+        <input type="text" class="form-control" [(ngModel)]="currentQuestion.question" name="question" required>
+      </div>
+
+      <div class="mb-2">
+        <label class="form-label">Chapitre</label>
+        <input type="text" class="form-control" [(ngModel)]="currentQuestion.chap" name="chap" required>
+      </div>
+
+      <h6>Answers</h6>
+      <div *ngFor="let a of currentQuestion.answers; let i=index" class="row mb-2 align-items-center">
+        <div class="col-md-2">
+          <input type="text" class="form-control" placeholder="Key" [(ngModel)]="a.optionKey" name="optionKey{{i}}" required>
+        </div>
+        <div class="col-md-6">
+          <input type="text" class="form-control" placeholder="Value" [(ngModel)]="a.optionValue" name="optionValue{{i}}" required>
+        </div>
+        <div class="col-md-2">
+          <div class="form-check">
+            <input type="checkbox" class="form-check-input" [(ngModel)]="a.correct" name="correct{{i}}">
+            <label class="form-check-label">Correct</label>
+          </div>
+        </div>
+        <div class="col-md-2">
+          <button type="button" class="btn btn-danger btn-sm" (click)="removeAnswer(i)">Remove</button>
+        </div>
+      </div>
+
+      <button type="button" class="btn btn-secondary mb-2" (click)="addAnswer()">Ajouter Answer</button>
+      <br>
+      <button type="submit" class="btn btn-primary">{{ currentQuestion.id ? 'Update' : 'Save' }}</button>
+      <button type="button" class="btn btn-outline-secondary ms-2" (click)="closeForm()">Annuler</button>
+    </form>
+  </div>
+</div>

@@ -22,6 +22,10 @@ public class Question {
     
     private String chap;
    
+   
+    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL,orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<Answer> answers;
+
 
     // getters + setters
 
@@ -70,8 +74,6 @@ public class Question {
 	public void setAnswers(List<Answer> answers) {
 	    this.answers = answers;
 	}
-	 @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	    private List<Answer> answers;
-
+	
 
 }

@@ -1,5 +1,7 @@
 package com.example.prepa1.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -18,13 +20,11 @@ public class Answer {
     private String optionValue;    // texte
     private boolean correct;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "question_id")
     private Question question;
     
-
-	
-
     public Question getQuestion() {
 		return question;
 	}

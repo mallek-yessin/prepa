@@ -7,9 +7,11 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -28,12 +30,33 @@ public class quizController {
 	LatexRepository latexRepository;
 
 	@Autowired
-    private QuestionService service;
+    private QuestionService questionService;
+	
+	
+	@GetMapping("/questions")
+	public List<Question> getAllQuestions() {
+	    return latexRepository.findAll();
+	}
+	
+
+	
+	@PutMapping("/questionUpdate/{id}")
+    public Question updateQuestion(@PathVariable Long id, @RequestBody qQuestionDTO dto) {
+        return questionService.updateQuestion(id, dto);
+    }
+	
+	
+	@DeleteMapping("/questionDelete/{id}")
+	public String deleteQuestion(@PathVariable Long id) {
+	    questionService.deleteQuestion(id);
+	    return "Question supprimée, réponses supprimées automatiquement";
+	}
+
 
     @GetMapping("questions/{chap}")
     public Object getAll(@PathVariable String  chap) {
     	Map<String, Object> map = new HashMap<>();
-        map.put(chap,List.of(service.getFormatted(chap).latex,service.getFormatted(chap).answers,service.getFormatted(chap).correct) );  // pas besoin de List.of(...)
+        map.put(chap,List.of(questionService.getFormatted(chap).latex,questionService.getFormatted(chap).answers,questionService.getFormatted(chap).correct) );  // pas besoin de List.of(...)
         
         return map;
     }

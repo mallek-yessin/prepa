@@ -5,6 +5,7 @@ import java.util.List;
 public class qQuestionDTO {
     private String question;  // LaTeX de la question
     private String chap;
+    private List<AnswerDTO> answers;
 
     public String getChap() {
 		return chap;
@@ -13,7 +14,7 @@ public class qQuestionDTO {
 		this.chap = chap;
 	}
 
-	private List<AnswerDTO> answers;
+	
 
     // getters & setters
     public String getQuestion() { return question; }
@@ -22,7 +23,7 @@ public class qQuestionDTO {
     public List<AnswerDTO> getAnswers() { return answers; }
     public void setAnswers(List<AnswerDTO> answers) { this.answers = answers; }
 
-    public static class AnswerDTO {
+   /* public static class AnswerDTO {
         private String optionKey;
         private String optionValue;
         private boolean correct;
@@ -36,5 +37,5 @@ public class qQuestionDTO {
 
         public boolean isCorrect() { return correct; }
         public void setCorrect(boolean correct) { this.correct = correct; }
-    }
+    }*/
 }
