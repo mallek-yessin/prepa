@@ -8,14 +8,13 @@ import { Observable } from 'rxjs';
 })
 export class QuestionService {
 
-  private api = 'http://localhost:8080/api/saveq';
 
-  private baseUrl = 'http://localhost:8080/api';
+  private baseUrl ='/api';// 'http://localhost:8080/api';
 
   constructor(private http: HttpClient) {}
 
   saveQuestion(dto: QuestionDTO): Observable<any> {
-    return this.http.post(this.api, dto);
+    return this.http.post(`${this.baseUrl}/saveq`, dto);
   }
 
 getAllQuestions(): Observable<any> {

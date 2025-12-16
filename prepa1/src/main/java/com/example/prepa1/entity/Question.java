@@ -1,7 +1,7 @@
 package com.example.prepa1.entity;
 
 import java.util.List;
-
+import jakarta.persistence.Column;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -17,6 +17,7 @@ public class Question {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(length = 2000)
     private String latex;   // example: "\\int_0^{+∞} x^2 e^{-x} dx = 2"
     
     

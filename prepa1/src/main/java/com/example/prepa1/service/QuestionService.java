@@ -3,8 +3,6 @@ package com.example.prepa1.service;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,7 +11,6 @@ import com.example.prepa1.dto.AnswerDTO;
 import com.example.prepa1.dto.qQuestionDTO;
 import com.example.prepa1.entity.Answer;
 import com.example.prepa1.entity.Question;
-
 import com.example.prepa1.repository.LatexRepository;
 
 @Service

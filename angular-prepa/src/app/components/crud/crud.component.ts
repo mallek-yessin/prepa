@@ -15,6 +15,43 @@ import { FormsModule } from '@angular/forms';
   
 })
 export class CrudComponent implements OnInit {
+
+  translations = {
+  FR: {
+    questions: "Questions",
+    addQuestion: "Ajouter une question +",
+    id: "ID",
+    question: "Question",
+    chapter: "Chapitre",
+    answers: "Réponses",
+    actions: "Actions",
+    correct: "Correct",
+    remove: "Supprimer",
+    addAnswer: "Ajouter une réponse",
+    save: "Enregistrer",
+    update: "Mettre à jour",
+    cancel: "Annuler",
+    edit: "Modifier",
+  },
+
+  EN: {
+    questions: "Questions",
+    addQuestion: "Add question +",
+    id: "ID",
+    question: "Question",
+    chapter: "Chapter",
+    answers: "Answers",
+    actions: "Actions",
+    correct: "Correct",
+    remove: "Remove",
+    addAnswer: "Add answer",
+    save: "Save",
+    update: "Update",
+    cancel: "Cancel",
+    edit: "Edit",
+  }
+};
+
   
   
 
@@ -25,6 +62,7 @@ export class CrudComponent implements OnInit {
   searchText = '';
   showForm = false;
   currentQuestion: Question = { question: '', chap: '', answers: [] };
+   currentLang = 'FR';
 
   constructor(private questionService: QuestionService) {}
 
@@ -32,6 +70,19 @@ export class CrudComponent implements OnInit {
     this.loadChapters();
     this.loadAllQuestions();
   }
+
+  /////
+
+ t(key: string) {
+  return (this.translations as any)[this.currentLang][key];
+}
+
+
+
+setLang(lang: string) {
+  this.currentLang = lang;
+}
+
 
   loadChapters() {
     this.questionService.getChapters().subscribe(chaps => this.chapters = chaps);
