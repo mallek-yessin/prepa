@@ -1,32 +1,25 @@
 <div class="container mt-4">
   <!-- Header et ajout -->
   <div class="d-flex justify-content-between align-items-center mb-3">
-<div class="d-flex gap-3 mb-3">
-  <div 
-    class="lang-circle"
-    [class.selected]="currentLang === 'FR'"
-    (click)="setLang('FR')"
-  >
-    FR
-  </div>
+    <div class="d-flex gap-3 mb-3">
+      <div class="lang-circle" [class.selected]="currentLang === 'FR'" (click)="setLang('FR')">
+        FR
+      </div>
 
-  <div 
-    class="lang-circle"
-    [class.selected]="currentLang === 'EN'"
-    (click)="setLang('EN')"
-  >
-    EN
-  </div>
-</div>
+      <div class="lang-circle" [class.selected]="currentLang === 'EN'" (click)="setLang('EN')">
+        EN
+      </div>
+    </div>
 
 
-<h5 class="mb-0">{{ t('questions') }}</h5>
-<button class="btn btn-primary" (click)="openForm()">{{ t('addQuestion') }}</button>
+
+    <h5 class="mb-0">{{ t('questions') }}</h5>
+    <button class="btn btn-primary" (click)="openForm()">{{ t('addQuestion') }}</button>
 
   </div>
 
- <!-- Filtres / recherche -->
- <!--  <div class="d-flex flex-wrap gap-2 mb-3">
+  <!-- Filtres / recherche -->
+  <!--  <div class="d-flex flex-wrap gap-2 mb-3">
     <input class="form-control me-2" type="search" placeholder="Rechercher par latex..." style="max-width: 200px;" [(ngModel)]="searchText" (input)="filterQuestions()"/>
     <select class="form-select" style="max-width: 200px;" [(ngModel)]="selectedChapter" (change)="loadQuestions(selectedChapter)">
       <option value="" selected>Tous les chapitres</option>
@@ -34,40 +27,6 @@
     </select>
     <button class="btn btn-outline-secondary ms-auto" (click)="filterQuestions()">Filtre avancé</button>
   </div>-->
-
-  <!-- Tableau questions -->
-  <table class="table table-hover align-middle text-center">
-    <thead class="table-light">
-      <tr>
-        <th>{{ t('id') }}</th>
-<th>{{ t('question') }}</th>
-<th>{{ t('chapter') }}</th>
-<th>{{ t('answers') }}</th>
-<th>{{ t('actions') }}</th>
-
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let q of questions">
-        <td>{{ q.id }}</td>
-        <td>{{ q.question }}</td>
-        <td>{{ q.chap }}</td>
-        <td>
-          <ul class="list-unstyled mb-0">
-            <li *ngFor="let a of q.answers">
-              {{ a.optionKey }} - {{ a.optionValue }}
-              <span class="badge bg-success" *ngIf="a.correct">{{ t('correct') }}</span>
-
-            </li>
-          </ul>
-        </td>
-        <td>
-          <i class="bi bi-pencil-square me-2 text-primary action-icon" title="Edit" (click)="editQuestion(q)">e</i>
-          <i class="bi bi-trash text-danger action-icon" title="Delete" (click)="deleteQuestion(q.id!)">d</i>
-        </td>
-      </tr>
-    </tbody>
-  </table>
 
   <!-- Formulaire question (modal ou sidebar) -->
   <div *ngIf="showForm" class="card p-3 mt-3">
@@ -88,10 +47,12 @@
       <h6>{{ t('answers') }}</h6>
       <div *ngFor="let a of currentQuestion.answers; let i=index" class="row mb-2 align-items-center">
         <div class="col-md-2">
-          <input type="text" class="form-control" placeholder="Key" [(ngModel)]="a.optionKey" name="optionKey{{i}}" required>
+          <input type="text" class="form-control" placeholder="Key" [(ngModel)]="a.optionKey" name="optionKey{{i}}"
+            required>
         </div>
         <div class="col-md-6">
-          <input type="text" class="form-control" placeholder="Value" [(ngModel)]="a.optionValue" name="optionValue{{i}}" required>
+          <input type="text" class="form-control" placeholder="Value" [(ngModel)]="a.optionValue"
+            name="optionValue{{i}}" required>
         </div>
         <div class="col-md-2">
           <div class="form-check">
@@ -108,13 +69,98 @@
 
       <br>
       <button type="submit" class="btn btn-primary">
-  {{ currentQuestion.id ? t('update') : t('save') }}
-</button>
+        {{ currentQuestion.id ? t('update') : t('save') }}
+      </button>
 
-<button type="button" class="btn btn-outline-secondary ms-2" (click)="closeForm()">
-  {{ t('cancel') }}
-</button>
+      <button type="button" class="btn btn-outline-secondary ms-2" (click)="closeForm()">
+        {{ t('cancel') }}
+      </button>
 
     </form>
   </div>
+
+
+
+  <div class="d-flex align-items-center mb-3">
+    <span class="me-2">problems per page:</span>
+    <select class="form-select form-select-sm w-auto" [(ngModel)]="itemsPerPage"
+      (change)="changeItemsPerPage(itemsPerPage)">
+      <option *ngFor="let size of pageSizeOptions" [value]="size">{{size}}</option>
+    </select>
+  </div>
+
+
+  <!-- Tableau questions -->
+  <table class="table table-hover align-middle text-center">
+    <thead class="table-light">
+      <tr>
+        <th>{{ t('id') }}</th>
+        <th>{{ t('question') }}</th>
+        <th>{{ t('chapter') }}</th>
+        <th>{{ t('answers') }}</th>
+        <th>{{ t('actions') }}</th>
+
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let q of paginatedItems" (click)="editQuestion(q)">
+        <td>{{ q.id }}</td>
+        <td class="preserve-lines">{{ q.question }}</td>
+        <td>{{ q.chap }}</td>
+        <td>
+          <ul class="list-unstyled mb-0">
+            <li *ngFor="let a of q.answers">
+              {{ a.optionKey }} - {{ a.optionValue }}
+              <span class="badge bg-success" *ngIf="a.correct">{{ t('correct') }}</span>
+
+            </li>
+          </ul>
+        </td>
+        <td>
+          <i class="bi bi-pencil-square me-2 text-primary action-icon cursor-pointer" title="Edit" (click)="editQuestion(q)"></i>
+          <i class="bi bi-trash text-danger action-icon cursor-pointer" title="Delete" (click)="deleteQuestion(q.id!)"></i>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+
+
+  <nav aria-label="Page navigation" *ngIf="totalPages > 0">
+    <ul class="pagination justify-content-center">
+      <!-- Premier bouton -->
+      <li class="page-item cursor-pointer" [class.disabled]="currentPage === 1">
+        <a class="page-link" (click)="goToPage(1)" aria-label="First">
+          <span aria-hidden="true">&laquo;&laquo;</span>
+        </a>
+      </li>
+
+      <!-- Bouton précédent -->
+      <li class="page-item cursor-pointer" [class.disabled]="currentPage === 1">
+        <a class="page-link" (click)="goToPage(currentPage - 1)" aria-label="Previous">
+          <span aria-hidden="true">&laquo;</span>
+        </a>
+      </li>
+
+      <!-- Numéros de page -->
+      <li class="page-item cursor-pointer" *ngFor="let pageNumber of getPageNumbers()" [class.active]="pageNumber === currentPage">
+        <a class="page-link" (click)="goToPage(pageNumber)">{{ pageNumber }}</a>
+      </li>
+
+      <!-- Bouton suivant -->
+      <li class="page-item cursor-pointer" [class.disabled]="currentPage === totalPages">
+        <a class="page-link" (click)="goToPage(currentPage + 1)" aria-label="Next">
+          <span aria-hidden="true">&raquo;</span>
+        </a>
+      </li>
+
+      <!-- Dernier bouton -->
+      <li class="page-item cursor-pointer" [class.disabled]="currentPage === totalPages">
+        <a class="page-link" (click)="goToPage(totalPages)" aria-label="Last">
+          <span aria-hidden="true">&raquo;&raquo;</span>
+        </a>
+      </li>
+    </ul>
+  </nav>
+
 </div>

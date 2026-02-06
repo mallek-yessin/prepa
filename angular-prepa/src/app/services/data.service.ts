@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Question, QuestionDTO } from '../models/question.dto';
 import { Observable } from 'rxjs';
+import { environment } from '../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -9,7 +10,7 @@ import { Observable } from 'rxjs';
 export class QuestionService {
 
 
-  private baseUrl ='/api';// 'http://localhost:8080/api';
+  private baseUrl =environment.baseUrl//'/api';// 'http://localhost:8080/api';
 
   constructor(private http: HttpClient) {}
 

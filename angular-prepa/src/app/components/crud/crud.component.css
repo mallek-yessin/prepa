@@ -1,3 +1,7 @@
+.preserve-lines {
+  white-space: pre-line;
+}
+
 .lang-circle {
   width: 40px;
   height: 40px;
@@ -14,4 +18,16 @@
   background-color: #0d6efd;
   color: white;
   border-color: #0d6efd;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+/* Pencil cursor when hovering table rows */
+.table tbody tr {
+  cursor: url("data:image/svg+xml;utf8,\
+<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'>\
+<text y='22' font-size='22'>✏️</text>\
+</svg>") 0 24, pointer;
 }

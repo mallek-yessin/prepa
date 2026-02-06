@@ -63,6 +63,10 @@ export class CrudComponent implements OnInit {
   showForm = false;
   currentQuestion: Question = { question: '', chap: '', answers: [] };
    currentLang = 'FR';
+   currentPage = 1;
+  itemsPerPage = 5;
+  pageSizeOptions = [5, 10, 25];
+
 
   constructor(private questionService: QuestionService) {}
 
@@ -94,7 +98,7 @@ setLang(lang: string) {
   });
 }
 
-  loadQuestions(chap: string) {
+  /*loadQuestions(chap: string) {
     this.selectedChapter = chap;
     this.questionService.getAllQuestions().subscribe(data => {
       const questionsObj = data as { [key: string]: Question[] };
@@ -103,7 +107,7 @@ setLang(lang: string) {
       console.log(this.questions)
      // this.filterQuestions();
     });
-  }
+  }*/
 
  /* filterQuestions() {
     const text = this.searchText.toLowerCase();
@@ -151,7 +155,68 @@ setLang(lang: string) {
 
   deleteQuestion(id: number) {
     if (confirm('Voulez-vous vraiment supprimer cette question ?')) {
-      this.questionService.deleteQuestion(id).subscribe(() => this.loadQuestions(this.selectedChapter));
+      this.questionService.deleteQuestion(id).subscribe(() => this.loadAllQuestions());
     }
+  }
+
+
+
+
+
+
+ changeItemsPerPage(newSize: number) {
+    this.itemsPerPage = newSize;
+    this.currentPage = 1; // Retour à la première page
+  }
+  
+  //pgination
+    get paginatedItems() {
+    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+    return this.questions.slice(startIndex, startIndex + this.itemsPerPage);
+  }
+
+    // Getter pour le nombre total de pages
+  get totalPages() {
+    return Math.ceil(this.questions.length / this.itemsPerPage);
+  }
+
+
+
+  // Aller à une page spécifique
+  goToPage(page: number) {
+    if (page >= 1 && page <= this.totalPages) {
+      this.currentPage = page;
+    }
+  }
+
+  // Générer la liste des numéros de page à afficher
+  getPageNumbers(): number[] {
+    const pages = [];
+    const maxVisiblePages = 5; // Nombre maximum de pages visibles dans la pagination
+    
+    let startPage = Math.max(1, this.currentPage - Math.floor(maxVisiblePages / 2));
+    let endPage = startPage + maxVisiblePages - 1;
+    
+    if (endPage > this.totalPages) {
+      endPage = this.totalPages;
+      startPage = Math.max(1, endPage - maxVisiblePages + 1);
+    }
+    
+    for (let i = startPage; i <= endPage; i++) {
+      pages.push(i);
+    }
+    
+    return pages;
+  }
+
+
+     // Méthode pour calculer la valeur minimale
+  getDisplayRangeEnd(currentPage: number, itemsPerPage: number, totalItems: number): number {
+    return Math.min(currentPage * itemsPerPage, totalItems);
+  }
+
+  // Méthode pour calculer le début de la plage
+  getDisplayRangeStart(currentPage: number, itemsPerPage: number): number {
+    return (currentPage - 1) * itemsPerPage + 1;
   }
 }
